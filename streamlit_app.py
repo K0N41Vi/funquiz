@@ -56,8 +56,8 @@ if "current" not in st.session_state:
     st.session_state.history = []
     st.session_state.wrong_questions = []
     st.session_state.mode = "通常"
-
-q = st.session_state.current
+    st.session_state.answered = False
+    st.session_state.result_message = ""
 
 # =====================
 # UI
@@ -75,6 +75,8 @@ st.session_state.mode = st.radio(
 # =====================
 if st.session_state.mode in ["通常", "復習"]:
 
+    q = st.session_state.current
+
     st.subheader("問題")
     st.write(q["question"])
 
@@ -82,6 +84,7 @@ if st.session_state.mode in ["通常", "復習"]:
 
     col1, col2 = st.columns(2)
 
+    # ヒントボタン
     with col1:
         if st.button("ヒントを見る"):
             if st.session_state.hint_level < len(q["hints"]):
@@ -93,6 +96,7 @@ if st.session_state.mode in ["通常", "復習"]:
             else:
                 st.info("これ以上ヒントはありません")
 
+    # 回答ボタン
     with col2:
         if st.button("回答する"):
             correct = user_answer.strip() == q["answer"]
@@ -106,15 +110,24 @@ if st.session_state.mode in ["通常", "復習"]:
             })
 
             if correct:
-                st.success("正解！")
+                st.session_state.result_message = "⭕ 正解！"
             else:
-                st.error(f"不正解。正解は「{q['answer']}」")
+                st.session_state.result_message = f"❌ 不正解。正解は「{q['answer']}」"
 
                 # 間違えた問題を保存（重複防止）
                 if q not in st.session_state.wrong_questions:
                     st.session_state.wrong_questions.append(q)
 
-            # 次の問題
+            st.session_state.answered = True
+
+    # 結果表示
+    if st.session_state.answered:
+        if "⭕" in st.session_state.result_message:
+            st.success(st.session_state.result_message)
+        else:
+            st.error(st.session_state.result_message)
+
+        if st.button("次の問題へ"):
             if st.session_state.mode == "通常":
                 st.session_state.current = random.choice(quiz)
             else:
@@ -122,11 +135,10 @@ if st.session_state.mode in ["通常", "復習"]:
                     st.session_state.current = random.choice(
                         st.session_state.wrong_questions
                     )
-                else:
-                    st.success("復習する問題はありません 🎉")
 
             st.session_state.hint_level = 0
-            st.experimental_rerun()
+            st.session_state.answered = False
+            st.session_state.result_message = ""
 
 # =====================
 # 間違えた問題一覧
