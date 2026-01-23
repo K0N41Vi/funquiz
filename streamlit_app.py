@@ -1,70 +1,78 @@
-```python
 import streamlit as st
 import random
 
 # =====================
-# 雑学クイズデータ（増量版）
+# 雑学クイズ（30問）
 # =====================
-quiz = [
-    {"id": 1, "question": "日本で一番面積が大きい都道府県は【　】である。", "answer": "北海道", "hints": ["都でも府でもない", "2位の約4倍", "本州とトンネルで接続"]},
-    {"id": 2, "question": "光の速さは約【　】km/秒である。", "answer": "300000", "hints": ["1秒で地球7周", "音より圧倒的に速い", "物理定数"]},
-    {"id": 3, "question": "タコの心臓の数は【　】個である。", "answer": "3", "hints": ["人間より多い", "血液が青い理由と関係", "1つは全身用ではない"]},
-    {"id": 4, "question": "雷の音が遅れて聞こえるのは【　】の伝わる速さが遅いためである。", "answer": "音", "hints": ["空気の振動", "真空では伝わらない", "光とは桁違い"]},
-    {"id": 5, "question": "人間の体で一番硬い部分は【　】である。", "answer": "歯", "hints": ["骨ではない", "エナメル質", "噛むため"]},
-    {"id": 6, "question": "富士山の標高は約【　】mである。", "answer": "3776", "hints": ["3000m以上", "日本最高峰", "語呂合わせが有名"]},
-    {"id": 7, "question": "ペンギンは【　】ことができない。", "answer": "飛ぶ", "hints": ["翼はある", "泳ぎは得意", "鳥類"]},
-    {"id": 8, "question": "世界で一番話者数が多い言語は【　】語である。", "answer": "中国", "hints": ["英語ではない", "人口が多い国", "漢字を使う"]},
-    {"id": 9, "question": "血液型を最初に発見したのは【　】人である。", "answer": "オーストリア", "hints": ["ヨーロッパ", "20世紀初頭", "医学者"]},
-    {"id": 10, "question": "人は一生で約【　】回まばたきをする。", "answer": "100000000", "hints": ["1億回", "無意識", "目を守る"]},
+QUIZ = [
+    {"id": 1, "q": "日本で一番面積が大きい都道府県は【　】である。", "a": "北海道", "h": ["2位の約4倍", "都でも府でもない", "本州とトンネルで接続"]},
+    {"id": 2, "q": "光の速さは約【　】km/秒である。", "a": "300000", "h": ["1秒で地球7周", "物理定数", "音より圧倒的に速い"]},
+    {"id": 3, "q": "タコの心臓の数は【　】個である。", "a": "3", "h": ["人間より多い", "血液が青い", "役割分担がある"]},
+    {"id": 4, "q": "雷の音が遅れて聞こえるのは【　】の伝わる速さが遅いためである。", "a": "音", "h": ["空気の振動", "真空では不可", "光とは桁違い"]},
+    {"id": 5, "q": "人間の体で一番硬い部分は【　】である。", "a": "歯", "h": ["骨ではない", "エナメル質", "鉱物に近い"]},
+    {"id": 6, "q": "富士山の標高は約【　】mである。", "a": "3776", "h": ["3000m超", "語呂合わせ有名", "日本最高峰"]},
+    {"id": 7, "q": "ペンギンは【　】ことができない。", "a": "飛ぶ", "h": ["鳥類", "翼はある", "泳ぎは得意"]},
+    {"id": 8, "q": "世界で話者数が最も多い言語は【　】語である。", "a": "中国", "h": ["英語ではない", "人口が多い国", "漢字文化"]},
+    {"id": 9, "q": "血液型を発見したのは【　】人である。", "a": "オーストリア", "h": ["ヨーロッパ", "20世紀初頭", "医学者"]},
+    {"id": 10, "q": "人は一生で約【　】回まばたきをする。", "a": "100000000", "h": ["1億回", "無意識", "目を守る"]},
+    {"id": 11, "q": "1円玉の素材は【　】である。", "a": "アルミニウム", "h": ["軽い", "水に浮く", "銀色"]},
+    {"id": 12, "q": "サメは【　】を持たない。", "a": "浮き袋", "h": ["魚類", "泳ぎ続ける", "肝臓が大きい"]},
+    {"id": 13, "q": "エッフェル塔は夏に【　】なる。", "a": "高く", "h": ["金属", "熱", "膨張"]},
+    {"id": 14, "q": "人の骨の数は大人で【　】本である。", "a": "206", "h": ["赤ちゃんは多い", "200本以上", "成長で減る"]},
+    {"id": 15, "q": "日本の紙幣で一番大きい額は【　】円である。", "a": "10000", "h": ["福沢諭吉", "紫色", "最高額"]},
+    {"id": 16, "q": "カメは【　】で呼吸もできる。", "a": "お尻", "h": ["総排泄孔", "冬眠", "皮膚呼吸"]},
+    {"id": 17, "q": "月は地球の周りを約【　】日で一周する。", "a": "27", "h": ["約4週間", "満ち欠けと違う", "公転周期"]},
+    {"id": 18, "q": "世界で一番深い海溝は【　】海溝である。", "a": "マリアナ", "h": ["太平洋", "日本近海", "1万m級"]},
+    {"id": 19, "q": "人の体の約60％は【　】でできている。", "a": "水", "h": ["飲料", "体液", "重量比"]},
+    {"id": 20, "q": "雷1回の電圧は約【　】万ボルトである。", "a": "1000000", "h": ["100万", "家庭用とは桁違い", "自然現象"]},
+    {"id": 21, "q": "氷は水より【　】。", "a": "軽い", "h": ["浮く", "密度", "体積"]},
+    {"id": 22, "q": "ミツバチは【　】角形が好きである。", "a": "六", "h": ["効率", "巣", "正多角形"]},
+    {"id": 23, "q": "人は寝ている間も【　】をしている。", "a": "呼吸", "h": ["自律神経", "止まると危険", "無意識"]},
+    {"id": 24, "q": "世界で一番高い山は【　】である。", "a": "エベレスト", "h": ["ヒマラヤ", "8000m超", "チョモランマ"]},
+    {"id": 25, "q": "イルカは【　】類である。", "a": "哺乳", "h": ["肺呼吸", "子を産む", "魚ではない"]},
+    {"id": 26, "q": "血液は体を約【　】秒で一周する。", "a": "60", "h": ["約1分", "心臓", "循環"]},
+    {"id": 27, "q": "人の舌で感じられる基本味は【　】種類である。", "a": "5", "h": ["甘・酸・塩・苦", "＋1", "うま味"]},
+    {"id": 28, "q": "金は【　】に溶けない。", "a": "錆", "h": ["酸化", "貴金属", "安定"]},
+    {"id": 29, "q": "地球は約【　】時間で自転する。", "a": "24", "h": ["1日", "昼夜", "太陽"]},
+    {"id": 30, "q": "人間の脳は体重の約【　】％しかない。", "a": "2", "h": ["小さい", "でも高消費", "エネルギー20％"]},
 ]
 
 # =====================
 # 初期化
 # =====================
-if "unused" not in st.session_state:
-    st.session_state.unused = quiz.copy()
-    random.shuffle(st.session_state.unused)
-    st.session_state.current = st.session_state.unused.pop()
-    st.session_state.hint_level = 0
-    st.session_state.history = []
-    st.session_state.wrong = []
+if "pool" not in st.session_state:
+    st.session_state.pool = QUIZ.copy()
+    random.shuffle(st.session_state.pool)
+    st.session_state.current = st.session_state.pool.pop()
+    st.session_state.hint = 0
     st.session_state.answered = False
 
-# =====================
-# UI
-# =====================
-st.title("🧠 雑学クイズ")
+st.title("🧠 雑学クイズ（30問）")
 
 st.subheader("問題")
-st.write(st.session_state.current["question"])
+st.write(st.session_state.current["q"])
 
-answer = st.text_input("答えを入力", key="answer")
+answer = st.text_input("答えを入力（数字・漢字OK）")
 
 if st.button("ヒント"):
-    hl = st.session_state.hint_level
-    if hl < len(st.session_state.current["hints"]):
-        st.warning(st.session_state.current["hints"][hl])
-        st.session_state.hint_level += 1
+    if st.session_state.hint < len(st.session_state.current["h"]):
+        st.info(st.session_state.current["h"][st.session_state.hint])
+        st.session_state.hint += 1
 
 if st.button("回答"):
-    correct = answer.strip() == st.session_state.current["answer"]
-    st.session_state.history.append((st.session_state.current, correct))
-    if not correct and st.session_state.current not in st.session_state.wrong:
-        st.session_state.wrong.append(st.session_state.current)
     st.session_state.answered = True
 
 if st.session_state.answered:
-    if answer.strip() == st.session_state.current["answer"]:
+    if answer.strip() == st.session_state.current["a"]:
         st.success("⭕ 正解")
     else:
-        st.error(f"❌ 不正解：正解は {st.session_state.current['answer']}")
+        st.error(f"❌ 不正解：正解は「{st.session_state.current['a']}」")
 
     if st.button("次の問題へ"):
-        if not st.session_state.unused:
-            st.session_state.unused = quiz.copy()
-            random.shuffle(st.session_state.unused)
-        st.session_state.current = st.session_state.unused.pop()
-        st.session_state.hint_level = 0
+        if not st.session_state.pool:
+            st.session_state.pool = QUIZ.copy()
+            random.shuffle(st.session_state.pool)
+        st.session_state.current = st.session_state.pool.pop()
+        st.session_state.hint = 0
         st.session_state.answered = False
         st.session_state.pop("answer", None)
-```
