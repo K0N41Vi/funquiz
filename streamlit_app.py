@@ -1,3 +1,4 @@
+```python
 import streamlit as st
 import random
 
@@ -65,4 +66,5 @@ if st.session_state.answered:
         st.session_state.current = st.session_state.unused.pop()
         st.session_state.hint_level = 0
         st.session_state.answered = False
-        st.session_state.answer = ""
+        st.session_state.pop("answer", None)
+```
