@@ -76,7 +76,7 @@ def get_all_quizzes():
     """SQLite3から全問題を取得する"""
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, question, answer, hints FROM quizzes")
+    cursor.execute("SELECT id, question, answer, hints FROM quizzes WHERE id BETWEEN 1 AND 10")
     rows = cursor.fetchall()
     conn.close()
 
